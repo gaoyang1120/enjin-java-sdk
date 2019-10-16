@@ -8,12 +8,13 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface WalletRetrofitService {
 
-    @POST("graphql")
+    @POST("graphql/{schema}")
     @GraphQuery("GetWallet")
     @Headers("Content-Type: application/json")
-    Call<GraphQLResponse<Wallet>> getWallet(@Body GraphQLRequest request);
+    Call<GraphQLResponse<Wallet>> getWallet(@Path(value = "schema") String schema, @Body GraphQLRequest request);
 
 }

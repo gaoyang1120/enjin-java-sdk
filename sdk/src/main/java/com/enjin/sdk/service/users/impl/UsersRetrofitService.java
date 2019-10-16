@@ -12,32 +12,33 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 
 public interface UsersRetrofitService {
 
-    @POST("graphql")
+    @POST("graphql/{schema}")
     @GraphQuery("OAuthUser")
     @Headers("Content-Type: application/json")
-    Call<GraphQLResponse<User>> oAuthUser(@Body GraphQLRequest request);
+    Call<GraphQLResponse<User>> oAuthUser(@Path(value = "schema") String schema, @Body GraphQLRequest request);
 
-    @POST("graphql")
+    @POST("graphql/{schema}")
     @GraphQuery("GetUsers")
     @Headers("Content-Type: application/json")
-    Call<GraphQLResponse<List<User>>> getUsers(@Body GraphQLRequest request);
+    Call<GraphQLResponse<List<User>>> getUsers(@Path(value = "schema") String schema, @Body GraphQLRequest request);
 
-    @POST("graphql")
+    @POST("graphql/{schema}")
     @GraphQuery("GetUser")
     @Headers("Content-Type: application/json")
-    Call<GraphQLResponse<User>> getUser(@Body GraphQLRequest request);
+    Call<GraphQLResponse<User>> getUser(@Path(value = "schema") String schema, @Body GraphQLRequest request);
 
-    @POST("graphql")
+    @POST("graphql/{schema}")
     @GraphQuery("CreateUser")
     @Headers("Content-Type: application/json")
-    Call<GraphQLResponse<User>> createUser(@Body GraphQLRequest request);
+    Call<GraphQLResponse<User>> createUser(@Path(value = "schema") String schema, @Body GraphQLRequest request);
 
-    @POST("graphql")
+    @POST("graphql/{schema}")
     @GraphQuery("AuthUser")
     @Headers("Content-Type: application/json")
-    Call<GraphQLResponse<AuthTokens>> authUser(@Body GraphQLRequest request);
+    Call<GraphQLResponse<AuthTokens>> authUser(@Path(value = "schema") String schema, @Body GraphQLRequest request);
 
 }

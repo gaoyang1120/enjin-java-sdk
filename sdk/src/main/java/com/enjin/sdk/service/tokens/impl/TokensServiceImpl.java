@@ -6,6 +6,7 @@ import java.util.List;
 import com.enjin.sdk.graphql.GraphQLResponse;
 import com.enjin.sdk.http.HttpCallback;
 import com.enjin.sdk.http.HttpResponse;
+import com.enjin.sdk.http.SchemaProvider;
 import com.enjin.sdk.model.service.tokens.CreateToken;
 import com.enjin.sdk.model.service.tokens.GetToken;
 import com.enjin.sdk.model.service.tokens.GetTokenEvents;
@@ -22,62 +23,64 @@ import retrofit2.Retrofit;
 public class TokensServiceImpl extends GraphQLServiceBase implements TokensService {
 
     private final TokensRetrofitService service;
+    private final SchemaProvider schemaProvider;
 
-    public TokensServiceImpl(Retrofit retrofit) {
+    public TokensServiceImpl(Retrofit retrofit, SchemaProvider schemaProvider) {
         this.service = retrofit.create(TokensRetrofitService.class);
+        this.schemaProvider = schemaProvider;
     }
 
     @Override
     public void getTokensAsync(GetTokens query,
                                HttpCallback<GraphQLResponse<List<Token>>> callback) {
-        enqueueGraphQLCall(this.service.getTokens(query), callback);
+        enqueueGraphQLCall(this.service.getTokens(schemaProvider.get(), query), callback);
     }
 
     @Override
     public void getTokenAsync(GetToken query, HttpCallback<GraphQLResponse<Token>> callback) {
-        enqueueGraphQLCall(this.service.getToken(query), callback);
+        enqueueGraphQLCall(this.service.getToken(schemaProvider.get(), query), callback);
     }
 
     @Override
     public void createTokenAsync(CreateToken query,
                                  HttpCallback<GraphQLResponse<Token>> callback) {
-        enqueueGraphQLCall(this.service.createToken(query), callback);
+        enqueueGraphQLCall(this.service.createToken(schemaProvider.get(), query), callback);
     }
 
     @Override
     public void updateTokenAsync(UpdateToken query,
                                  HttpCallback<GraphQLResponse<Token>> callback) {
-        enqueueGraphQLCall(this.service.updateToken(query), callback);
+        enqueueGraphQLCall(this.service.updateToken(schemaProvider.get(), query), callback);
     }
 
     @Override
     public void getTokenEventsAsync(GetTokenEvents query, HttpCallback<GraphQLResponse<List<TokenEvent>>> callback) {
-        enqueueGraphQLCall(this.service.getTokenEvents(query), callback);
+        enqueueGraphQLCall(this.service.getTokenEvents(schemaProvider.get(), query), callback);
     }
 
     @Override
     public HttpResponse<GraphQLResponse<List<Token>>> getTokensSync(GetTokens query) throws IOException {
-        return executeGraphQLCall(this.service.getTokens(query));
+        return executeGraphQLCall(this.service.getTokens(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<Token>> getTokenSync(GetToken query) throws IOException {
-        return executeGraphQLCall(this.service.getToken(query));
+        return executeGraphQLCall(this.service.getToken(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<Token>> createTokenSync(CreateToken query) throws IOException {
-        return executeGraphQLCall(this.service.createToken(query));
+        return executeGraphQLCall(this.service.createToken(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<Token>> updateTokenSync(UpdateToken query) throws IOException {
-        return executeGraphQLCall(this.service.updateToken(query));
+        return executeGraphQLCall(this.service.updateToken(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<List<TokenEvent>>> getTokenEventsSync(GetTokenEvents query) throws IOException {
-        return executeGraphQLCall(this.service.getTokenEvents(query));
+        return executeGraphQLCall(this.service.getTokenEvents(schemaProvider.get(), query));
     }
 
 }

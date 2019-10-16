@@ -9,6 +9,7 @@ import com.enjin.sdk.http.HttpResponse;
 import com.enjin.sdk.model.service.auth.AuthTokens;
 import com.enjin.sdk.model.service.auth.AuthUser;
 import com.enjin.sdk.model.service.users.OAuthUser;
+import com.enjin.sdk.http.SchemaProvider;
 import com.enjin.sdk.model.service.users.CreateUser;
 import com.enjin.sdk.model.service.users.GetUser;
 import com.enjin.sdk.model.service.users.GetUsers;
@@ -21,62 +22,64 @@ import retrofit2.Retrofit;
 public class UsersServiceImpl extends GraphQLServiceBase implements UsersService {
 
     private final UsersRetrofitService service;
+    private final SchemaProvider schemaProvider;
 
-    public UsersServiceImpl(Retrofit retrofit) {
+    public UsersServiceImpl(Retrofit retrofit, SchemaProvider schemaProvider) {
         this.service = retrofit.create(UsersRetrofitService.class);
+        this.schemaProvider = schemaProvider;
     }
 
     @Override
     public void getUsersAsync(GetUsers query,
                               HttpCallback<GraphQLResponse<List<User>>> callback) {
-        enqueueGraphQLCall(this.service.getUsers(query), callback);
+        enqueueGraphQLCall(this.service.getUsers(schemaProvider.get(), query), callback);
     }
 
     @Override
     public void getUserAsync(GetUser query, HttpCallback<GraphQLResponse<User>> callback) {
-        enqueueGraphQLCall(this.service.getUser(query), callback);
+        enqueueGraphQLCall(this.service.getUser(schemaProvider.get(), query), callback);
     }
 
     @Override
     public void createUserAsync(CreateUser query,
                                 HttpCallback<GraphQLResponse<User>> callback) {
-        enqueueGraphQLCall(this.service.createUser(query), callback);
+        enqueueGraphQLCall(this.service.createUser(schemaProvider.get(), query), callback);
     }
 
     @Override
-    public void oAuthUserAsync(OAuthUser query,
-                               HttpCallback<GraphQLResponse<User>> callback) {
-        enqueueGraphQLCall(this.service.oAuthUser(query), callback);
+    public void oAuthUserAsync(OAuthUser query, HttpCallback<GraphQLResponse<User>> callback) {
+        enqueueGraphQLCall(this.service.oAuthUser(schemaProvider.get(), query), callback);
     }
 
     @Override
-    public void authUserAsync(AuthUser query, HttpCallback<GraphQLResponse<AuthTokens>> callback) {
-        enqueueGraphQLCall(this.service.authUser(query), callback);
+    public void authUserAsync(AuthUser query,
+                              HttpCallback<GraphQLResponse<AuthTokens>> callback) {
+        enqueueGraphQLCall(this.service.authUser(schemaProvider.get(), query), callback);
     }
 
     @Override
     public HttpResponse<GraphQLResponse<List<User>>> getUsersSync(GetUsers query) throws IOException {
-        return executeGraphQLCall(this.service.getUsers(query));
+        return executeGraphQLCall(this.service.getUsers(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<User>> getUserSync(GetUser query) throws IOException {
-        return executeGraphQLCall(this.service.getUser(query));
+        return executeGraphQLCall(this.service.getUser(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<User>> createUserSync(CreateUser query) throws IOException {
-        return executeGraphQLCall(this.service.createUser(query));
+        return executeGraphQLCall(this.service.createUser(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<User>> oAuthUserSync(OAuthUser query) throws IOException {
-        return executeGraphQLCall(this.service.oAuthUser(query));
+        return executeGraphQLCall(this.service.oAuthUser(schemaProvider.get(), query));
     }
 
     @Override
     public HttpResponse<GraphQLResponse<AuthTokens>> authUserSync(AuthUser query) throws IOException {
-        return executeGraphQLCall(this.service.authUser(query));
+        return executeGraphQLCall(this.service.authUser(schemaProvider.get(), query));
     }
 
 }
