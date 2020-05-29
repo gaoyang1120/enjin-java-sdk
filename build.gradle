@@ -1,47 +1,15 @@
 buildscript {
-    ext.versions = [
-            'gson'            : '2.8.6',
-            'pusher'          : '2.0.1',
-            'okhttp'          : '4.3.1',
-            'retrofit'        : '2.7.1',
-            'supportOptional' : '1.2',
-            'lombok'          : '1.18.6',
-            'junit'           : '4.12',
-            'mockWebServer'   : '4.2.0',
-            'truth'           : '1.0',
-            'awaitility'      : '4.0.1',
-            'toStringVerifier': '1.4.5',
-            'equalsVerifier'  : '3.1.10',
-            'mockito'         : '3.0.0',
-            'powermock'       : '2.0.2',
-            'nocatch'         : '1.1',
-            'codeGen'         : '5.0.0-rc6',
-            'javapoet'        : '1.12.1',
-            'websocket'       : '1.4.1'
-    ]
-
     ext.deps = [
-            'gson'                    : "com.google.code.gson:gson:${versions.gson}",
-            'pusher'                  : "com.pusher:pusher-java-client:${versions.pusher}",
-            'okhttp'                  : "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-            'okhttpLoggingInterceptor': "com.squareup.okhttp3:logging-interceptor:${versions.okhttp}",
-            'okhttpUrlConnection'     : "com.squareup.okhttp3:okhttp-urlconnection:${versions.okhttp}",
-            'retrofit'                : "com.squareup.retrofit2:retrofit:${versions.retrofit}",
-            'retrofitGson'            : "com.squareup.retrofit2:converter-gson:${versions.retrofit}",
-            'supportOptional'         : "com.github.dmstocking:support-optional:${versions.supportOptional}",
-            'junit'                   : "junit:junit:${versions.junit}",
-            'mockWebServer'           : "com.squareup.okhttp3:mockwebserver:${versions.mockWebServer}",
-            'truth'                   : "com.google.truth:truth:${versions.truth}",
-            'awaitility'              : "org.awaitility:awaitility:${versions.awaitility}",
-            'toStringVerifier'        : "com.jparams:to-string-verifier:${versions.toStringVerifier}",
-            'equalsVerifier'          : "nl.jqno.equalsverifier:equalsverifier:${versions.equalsVerifier}",
-            'mockito'                 : "org.mockito:mockito-core:${versions.mockito}",
-            'powermockJunit4'         : "org.powermock:powermock-module-junit4:${versions.powermock}",
-            'powermockMockito2'       : "org.powermock:powermock-api-mockito2:${versions.powermock}",
-            'nocatch'                 : "com.github.micheljung:nocatch:${versions.nocatch}",
-            'codeGenApi'              : "io.freefair.gradle:code-generator-api:${versions.codeGen}",
-            'javapoet'                : "com.squareup:javapoet:${versions.javapoet}",
-            'websocket'               : "org.java-websocket:Java-WebSocket:${versions.websocket}"
+            'gson'                    : "com.google.code.gson:gson:${gsonVersion}",
+            'pusher'                  : "com.pusher:pusher-java-client:${pusherVersion}",
+            'okhttp'                  : "com.squareup.okhttp3:okhttp:${okhttpVersion}",
+            'okhttpLoggingInterceptor': "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}",
+            'okhttpUrlConnection'     : "com.squareup.okhttp3:okhttp-urlconnection:${okhttpVersion}",
+            'retrofit'                : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            'retrofitGson'            : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            'codeGenApi'              : "io.freefair.gradle:code-generator-api:${codeGenVersion}",
+            'javapoet'                : "com.squareup:javapoet:${javapoetVersion}",
+            'websocket'               : "org.java-websocket:Java-WebSocket:${websocketVersion}"
     ]
 
     ext.local = new Properties()
@@ -50,40 +18,23 @@ buildscript {
 
     repositories {
         mavenCentral()
-        jcenter()
         gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.9.0'
-        classpath 'org.ajoberstar:gradle-git-publish:2.1.1'
-        classpath 'com.diffplug.spotless:spotless-plugin-gradle:3.24.3'
     }
 }
 
 plugins {
-    id 'io.freefair.lombok' version '4.1.6'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
-    id 'com.bmuschko.nexus' version '2.3.1'
-    id 'io.codearte.nexus-staging' version '0.21.1'
-    id 'net.ltgt.errorprone' version '1.1.1'
-    id 'jacoco'
-    id 'checkstyle'
-    id 'com.github.ben-manes.versions' version '0.25.0'
+    id 'io.freefair.lombok' version "${lombokVersion}"
+    id 'com.github.johnrengelman.shadow' version "${shadowVersion}"
+    id 'org.ajoberstar.git-publish' version "${gitPublishVersion}"
 }
 
 allprojects {
-    apply from: "${rootProject.rootDir}/gradle/spotless.gradle"
-
     group = GROUP
     version = VERSION_NAME
 
     repositories {
-        jcenter()
-        mavenCentral()
         mavenLocal()
-        maven { url 'https://oss.sonatype.org/content/groups/public/' }
-        maven { url "https://jitpack.io" }
+        mavenCentral()
     }
 }
 
@@ -92,21 +43,10 @@ subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven'
     apply plugin: 'io.freefair.lombok'
-    apply plugin: 'net.ltgt.errorprone'
     apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'jacoco'
-    apply plugin: 'checkstyle'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
-
-    tasks.withType(JavaCompile).configureEach {
-        options.errorprone {
-            enabled = JavaVersion.current() < JavaVersion.VERSION_12
-            disable('UnusedVariable')
-            disable('UnusedMethod')
-        }
-    }
 
     javadoc {
         dependsOn delombok
@@ -124,43 +64,9 @@ subprojects {
     lombok {
         config['lombok.addLombokGeneratedAnnotation'] = 'false'
     }
-
-    test {
-        reports {
-            html.enabled = false
-        }
-    }
-
-    jacoco {
-        toolVersion = '0.8.4'
-    }
-
-    jacocoTestReport {
-        reports {
-            xml.enabled = true
-            html.destination file("${buildDir}/reports/tests/test")
-        }
-    }
-
-    checkstyle {
-        toolVersion = '8.24'
-        sourceSets = [project.sourceSets.main]
-    }
-
-    tasks.withType(Checkstyle) {
-        reports {
-            xml.enabled false
-            html.enabled true
-        }
-    }
-
-    dependencies {
-        errorproneJavac 'com.google.errorprone:javac:9+181-r4173-1'
-        errorprone 'com.google.errorprone:error_prone_core:2.3.3'
-    }
 }
 
 wrapper {
-    gradleVersion = '6.1.1'
+    gradleVersion = "${gradleVersion}"
     distributionType = Wrapper.DistributionType.ALL
 }

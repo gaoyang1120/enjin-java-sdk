@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import com.enjin.sdk.graphql.GraphQLError;
@@ -17,7 +18,6 @@ import com.enjin.sdk.graphql.GraphQLResponse;
 import com.enjin.sdk.models.PaginationCursor;
 import com.enjin.sdk.serialization.BigIntegerDeserializer;
 import com.enjin.sdk.utils.GsonUtil;
-import com.github.dmstocking.optional.java.util.Optional;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -48,14 +48,26 @@ public class GraphConverter extends Converter.Factory {
     private static final String RESULT_PATH = DATA_KEY + '.' + RESULT_KEY;
     private static final String CURSOR_PATH = RESULT_PATH + '.' + CURSOR_KEY;
 
+    /**
+     * Protected GraphQL processor.
+     */
     protected GraphQLProcessor graphProcessor;
 
+    /**
+     * Protected parser to make use of the default parse settings.
+     */
     protected final JsonParser parser = new JsonParser();
+    /**
+     * Protected gson builder to make use of custom builder settings for serialization.
+     */
     protected final Gson toJson = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .setLenient()
             .registerTypeAdapter(BigInteger.class, new BigIntegerDeserializer())
             .create();
+    /**
+     * Protected gson builder to make use of custom builder settings for deserialization.
+     */
     protected final Gson fromJson = new GsonBuilder()
             .enableComplexMapKeySerialization()
             .setLenient()
@@ -121,6 +133,11 @@ public class GraphConverter extends Converter.Factory {
         return null;
     }
 
+    /**
+     * Returns a new graph converter.
+     *
+     * @return the created graph converter.
+     */
     public static GraphConverter create() {
         return new GraphConverter();
     }
@@ -133,6 +150,11 @@ public class GraphConverter extends Converter.Factory {
         protected ParameterizedType graphResponseType;
         protected Type resultType;
 
+        /**
+         * Sole constructor.
+         *
+         * @param graphResponseType The graph response type.
+         */
         protected GraphResponseConverter(ParameterizedType graphResponseType) {
             this.graphResponseType = graphResponseType;
             this.resultType = graphResponseType.getActualTypeArguments()[0];

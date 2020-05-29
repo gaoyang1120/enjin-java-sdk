@@ -1,7 +1,18 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath "com.vanniktech:gradle-maven-publish-plugin:${mavenPublishVersion}"
+    }
+}
+
 plugins {
-    id 'io.freefair.code-generator' version '5.0.0-rc6'
+    id 'io.freefair.code-generator' version "${codeGenVersion}"
 }
 
 apply from: "${rootProject.rootDir}/gradle/ghPages.gradle"
@@ -20,18 +31,6 @@ dependencies {
     implementation deps.okhttpUrlConnection
     implementation deps.retrofit
     implementation deps.retrofitGson
-    implementation deps.supportOptional
-    implementation deps.nocatch
-
-    testImplementation deps.junit
-    testImplementation deps.truth
-    testImplementation deps.mockWebServer
-    testImplementation deps.awaitility
-    testImplementation deps.toStringVerifier
-    testImplementation deps.equalsVerifier
-    testImplementation deps.mockito
-    testImplementation deps.powermockJunit4
-    testImplementation deps.powermockMockito2
 }
 
 task processSource(type: Sync) {
